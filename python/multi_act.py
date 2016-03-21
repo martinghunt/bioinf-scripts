@@ -14,6 +14,7 @@ parser = argparse.ArgumentParser(
     usage = '%(prog)s [options] <blast|nucmer|promer> <outprefix> <file1.fa> <file2.fa>  [<file3.fa ...]')
 parser.add_argument('--blast_ops', help='blastall options [%(default)s]', default='-p blastn -m 8 -F F -e 0.01 -b 10000 -v 10000')
 parser.add_argument('--nucmer_ops', help='nucmer or promer options [promer:--maxmatch. nucmer: --maxmatch --nosimplify]')
+parser.add_argument('--no_delta_filter', action='store_true')
 parser.add_argument('--delta_ops', help='delta-filter options [%(default)s]', default='-m')
 parser.add_argument('aln_tool', help='blast, nucmer or promer')
 parser.add_argument('outprefix', help='Prefix of output files')
@@ -59,12 +60,16 @@ def compare_with_nucmer(qry, ref, ops, outfile):
     print('cmd:', cmd)
     pyfastaq.utils.syscall(cmd)
 
-    cmd = ' '.join([
-        'delta-filter',
-        ops.delta_ops,
-        delta_file,
-        '>', filtered_file,
-    ])
+    if ops.no_delta_filter:
+        cmd = 'cp ' + delta_file + ' ' + filtered_file
+    else:
+        cmd = ' '.join([
+            'delta-filter',
+            ops.delta_ops,
+            delta_file,
+            '>', filtered_file,
+        ])
+
     print('cmd:', cmd)
     pyfastaq.utils.syscall(cmd)
 

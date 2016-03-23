@@ -29,6 +29,7 @@ class Appearance:
         self.contig_fill_colour = opts.seq_col
         self.contig_border_colour = opts.seq_col
         self.contig_border_width = 0
+        self.contig_x_space = opts.contig_x_space
         self.match_fwd_fill_colour = opts.fwd_match_col
         self.match_fwd_border_colour = opts.fwd_match_col
         self.match_fwd_border_width = 0
@@ -54,7 +55,7 @@ class Assembly:
         return sum(self.lengths.values()) + contig_x_space * (len(self.lengths) - 1)
 
 
-    def contigs_svg(self, scale_factor, y_top, y_bottom, contig_x_space, appearance):
+    def contigs_svg(self, scale_factor, y_top, y_bottom, appearance):
         x_in_bases = 0
         lines = []
         self.contig_coords = {}
@@ -73,7 +74,7 @@ class Assembly:
                     border_width=appearance.contig_border_width
                 )
             )
-            x_in_bases = x_end + contig_x_space
+            x_in_bases = x_end + appearance.contig_x_space
 
         return '\n'.join(lines)
 
@@ -155,7 +156,7 @@ class Assemblies:
         y_top = 0
         for filename in self.fasta_files:
             y_bottom = y_top + self.contig_height
-            print(self.assemblies[filename].contigs_svg(self.x_scale_factor, y_top, y_bottom, self.contig_x_space, self.appearance), file=filehandle)
+            print(self.assemblies[filename].contigs_svg(self.x_scale_factor, y_top, y_bottom, self.appearance), file=filehandle)
             y_top += self.contig_height + 2 * self.y_space + self.match_height
 
 
@@ -203,8 +204,7 @@ class Assemblies:
         self.y_space = 1
         self.svg_height = (len(self.assemblies) - 1) * (self.contig_height + 2 * self.y_space + self.match_height) + self.y_space + self.contig_height
         self.svg_width = 400
-        self.contig_x_space = 100000
-        self.total_width_in_bases = self._get_x_max(self.assemblies, self.contig_x_space)
+        self.total_width_in_bases = self._get_x_max(self.assemblies, self.appearance.contig_x_space)
         self.x_scale_factor = self.svg_width / self.total_width_in_bases
 
         svg_file = outprefix + '.svg'
@@ -222,6 +222,7 @@ class Assemblies:
 parser = argparse.ArgumentParser(
     description = 'Makes cartoon ACT-style figure comparing at least two FASTA files. Files are shown from top to bottom in the same order as listed on the command line when calling this script.',
     usage = '%(prog)s [options] <outprefix> <file1.fa> <file2.fa> [more fasta files ...]')
+parser.add_argument('--contig_x_space', type=int, help='Space between each contig, in bases [%(default)s]', default=20000, metavar='INT')
 parser.add_argument('--seq_col', help='Colour of sequences [%(default)s]', default='black', metavar='STRING')
 parser.add_argument('--fwd_match_col', help='Colour of match on same strands [%(default)s]', default='lightseagreen', metavar='STRING')
 parser.add_argument('--rev_match_col', help='Colour of match on opposite strands [%(default)s]', default='peru', metavar='STRING')

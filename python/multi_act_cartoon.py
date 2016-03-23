@@ -122,7 +122,7 @@ class Assemblies:
                     nucmer_file,
                     min_id=self.nucmer_min_id,
                     breaklen=500,
-                    maxmatch=False,
+                    maxmatch=True,
                     simplify=True,
                     verbose=False,
                 )
@@ -216,7 +216,7 @@ parser.add_argument('--rev_match_col', help='Colour of match on opposite strands
 parser.add_argument('--match_opacity', type=int, help='Opactiy of matches between 0 and 1. Higher means less transparent [%(default)s]', default=0.8, metavar='FLOAT in [0,1]')
 parser.add_argument('--match_min_len_bases', type=int, help='Minimum match length to show. See --match_min_len_ratio [%(default)s]', default=5000, metavar='INT')
 parser.add_argument('--match_min_len_ratio', type=float, help='Minimum match length to show, as proportion of sequence lengths. Using "--match_min_len_bases X --match_min_len_ratio Y" means that a match of length L is shown if L >= min(X, Y * S), where S is max(length of seq1, length of seq2) [%(default)s]', default=0.2, metavar='FLOAT')
-parser.add_argument('--nucmer_min_id', type=int, help='Minimum identity when running nucmer [%(default)s]', default=95, metavar='FLOAT')
+parser.add_argument('--nucmer_min_id', type=int, help='Minimum identity when running nucmer [%(default)s]', default=90, metavar='FLOAT')
 parser.add_argument('outprefix', help='Prefix of output files')
 parser.add_argument('fa_list', help='List of at least 2 fasta files', nargs=argparse.REMAINDER)
 options = parser.parse_args()

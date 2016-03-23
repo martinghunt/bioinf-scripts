@@ -165,7 +165,7 @@ class Assemblies:
         lines = []
         y_bottom = y_top + self.match_height
         for match in nucmer_matches:
-            if match.hit_length_qry < min(self.appearance.match_min_length_bases, self.appearance.match_min_length_ratio * max(match.qry_length, match.ref_length)):
+            if match.hit_length_qry < min(self.appearance.match_min_length_bases, self.appearance.match_min_length_ratio * min(match.qry_length, match.ref_length)):
                 continue
 
             top_contig_start, top_contig_end = top_assembly.contig_coords[match.qry_name]

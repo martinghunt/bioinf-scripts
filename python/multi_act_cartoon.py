@@ -101,22 +101,6 @@ class Assemblies:
 
 
     @staticmethod
-    def _run_nucmer(ref, qry, outfile, min_id=98, simplify=True, min_length=250):
-        n = pymummer.nucmer.Runner(
-            ref,
-            qry,
-            outfile,
-            min_id=min_id,
-            min_length=250,
-            breaklen=500,
-            maxmatch=False,
-            simplify=simplify,
-            verbose=True,
-        )
-        n.run()
-
-
-    @staticmethod
     def _get_x_max(assemblies, contig_x_space):
         return max([a.x_width(contig_x_space) for a in assemblies.values()])
 
@@ -132,14 +116,17 @@ class Assemblies:
                 print('Found nucmer coords file', nucmer_file, 'so no need to run nucmer')
             else:
                 print('Running nucmer. Coords file will be called:', nucmer_file)
-                self._run_nucmer(
+                n = pymummer.nucmer.Runner(
                     self.fasta_files[i+1],
                     self.fasta_files[i],
                     nucmer_file,
                     min_id=self.nucmer_min_id,
-                    simplify=self.simplify,
-                    min_length=self.nucmer_min_length
+                    breaklen=500,
+                    maxmatch=False,
+                    simplify=True,
+                    verbose=False,
                 )
+                n.run()
 
             self.nucmer_matches.append([x for x in pymummer.coords_file.reader(nucmer_file)])
 

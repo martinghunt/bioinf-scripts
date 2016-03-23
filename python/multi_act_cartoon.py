@@ -5,6 +5,7 @@ import sys
 import argparse
 import pyfastaq
 import pymummer
+import logging
 
 
 # coords = list of tuples [(x1, y1), (x2, y2) ...]
@@ -77,7 +78,7 @@ class Assembly:
 
 
 class Assemblies:
-    def __init__(self, fasta_files, appearance, outprefix, nucmer_min_id=98, nucmer_min_length=250, simplify=True):
+    def __init__(self, fasta_files, appearance, outprefix, nucmer_min_id=98, nucmer_min_length=250, simplify=True, verbose=False):
         self.fasta_files = fasta_files
         self.appearance = appearance
         self.outprefix = outprefix
@@ -94,6 +95,7 @@ class Assemblies:
         self.nucmer_min_id = nucmer_min_id
         self.nucmer_min_length = nucmer_min_length
         self.simplify = simplify
+        self.verbose = verbose
         self.assemblies = {filename: Assembly(filename) for filename in fasta_files}
 
 
@@ -107,12 +109,12 @@ class Assemblies:
         self.nucmer_files = []
 
         for i in range(len(self.assemblies) - 1):
-            print('Comparing assembly ', i, ' (', self.fasta_files[i], ') against ', i+1, ' (', self.fasta_files[i+1], ')', sep='')
+            logging.info(''.join([str(x) for x in ['Comparing assembly ', i, ' (', self.fasta_files[i], ') against ', i+1, ' (', self.fasta_files[i+1], ')']]))
             nucmer_file = '.'.join([outprefix, str(i), str(i+1), 'coords'])
             if os.path.exists(nucmer_file):
-                print('Found nucmer coords file', nucmer_file, 'so no need to run nucmer')
+                logging.info('Found nucmer coords file ' + nucmer_file + ' so no need to run nucmer')
             else:
-                print('Running nucmer. Coords file will be called:', nucmer_file)
+                logging.info('Running nucmer. Coords file will be called: ' + nucmer_file)
                 n = pymummer.nucmer.Runner(
                     self.fasta_files[i+1],
                     self.fasta_files[i],
@@ -121,7 +123,7 @@ class Assemblies:
                     breaklen=500,
                     maxmatch=True,
                     simplify=True,
-                    verbose=False,
+                    verbose=logging.getLogger().isEnabledFor(logging.INFO),
                 )
                 n.run()
 
@@ -192,14 +194,14 @@ class Assemblies:
         self.x_scale_factor = self.svg_width / self.total_width_in_bases
 
         svg_file = outprefix + '.svg'
-        print('Writing SVG file', svg_file)
+        logging.info('Writing SVG file: ' + svg_file)
         svg_fh = pyfastaq.utils.open_file_write(svg_file)
         self._write_svg_header(svg_fh, self.svg_width, self.svg_height)
         self._write_svg_contigs(svg_fh)
         self._write_all_svg_matches(svg_fh)
         print('</svg>', file=svg_fh)
         pyfastaq.utils.close(svg_fh)
-        print('Finished writing SVG file', svg_file)
+        logging.info('Finished writing SVG file: ' + svg_file)
 
 
 
@@ -214,6 +216,7 @@ parser.add_argument('--match_opacity', type=int, help='Opactiy of matches betwee
 parser.add_argument('--match_min_len_bases', type=int, help='Minimum match length to show. Whether or not a match is shown also depends on the sequence lengths. See --match_min_len_ratio [%(default)s]', default=5000, metavar='INT')
 parser.add_argument('--match_min_len_ratio', type=float, help='Minimum match length to show, as proportion of sequence lengths. Using "--match_min_len_bases X --match_min_len_ratio Y" means that a match of length L is shown if L >= min(X, Y * S), where S is max(length of seq1, length of seq2) [%(default)s]', default=0.2, metavar='FLOAT')
 parser.add_argument('--nucmer_min_id', type=int, help='Minimum identity when running nucmer [%(default)s]', default=90, metavar='FLOAT')
+parser.add_argument('-v', '--verbose', action='store_true', help='Be verbose')
 parser.add_argument('outprefix', help='Prefix of output files')
 parser.add_argument('fa_list', help='List of at least 2 fasta files', nargs=argparse.REMAINDER)
 options = parser.parse_args()
@@ -223,12 +226,16 @@ if len(options.fa_list) < 2:
     print('Must have at least two input fasta files! Cannot continue', file=sys.stderr)
     sys.exit(1)
 
+if options.verbose:
+    logging.basicConfig(level=logging.INFO, format='')
+
 a = Assemblies(
     options.fa_list,
     Appearance(options),
     options.outprefix,
     nucmer_min_id=options.nucmer_min_id,
-    simplify=True
+    simplify=True,
+    verbose=options.verbose
 )
 a.run(options.outprefix)
 

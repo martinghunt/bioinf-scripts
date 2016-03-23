@@ -2,10 +2,7 @@
 
 import os
 import sys
-import tempfile
-import shutil
 import argparse
-import copy
 import pyfastaq
 import pymummer
 

@@ -6,6 +6,7 @@ import argparse
 import pyfastaq
 import pymummer
 import logging
+from operator import itemgetter
 
 
 # coords = list of tuples [(x1, y1), (x2, y2) ...]
@@ -35,8 +36,8 @@ class Appearance:
         self.match_rev_border_colour = opts.rev_match_col
         self.match_rev_border_width = 0
         self.match_opacity = opts.match_opacity
-        self.match_min_length_bases = 10000
-        self.match_min_length_ratio = 0.2
+        self.match_min_length_bases = opts.match_min_len_bases
+        self.match_min_length_ratio = opts.match_min_len_ratio
 
 
 class Assembly:
@@ -165,12 +166,12 @@ class Assemblies:
 
             coords = [(top_start, y_top), (top_end, y_top), (bottom_end, y_bottom), (bottom_start, y_bottom)]
             if match.on_same_strand():
-                lines.append((top_start - top_end, svg_polygon(coords, self.appearance.match_fwd_fill_colour, self.appearance.match_fwd_border_colour, opacity=self.appearance.match_opacity, border_width=self.appearance.match_fwd_border_width)))
+                lines.append((0, abs(top_start - top_end), svg_polygon(coords, self.appearance.match_fwd_fill_colour, self.appearance.match_fwd_border_colour, opacity=self.appearance.match_opacity, border_width=self.appearance.match_fwd_border_width)))
             else:
-                lines.append((top_start - top_end, svg_polygon(coords, self.appearance.match_rev_fill_colour, self.appearance.match_rev_border_colour, opacity=self.appearance.match_opacity, border_width=self.appearance.match_rev_border_width)))
+                lines.append((1, abs(top_start - top_end), svg_polygon(coords, self.appearance.match_rev_fill_colour, self.appearance.match_rev_border_colour, opacity=self.appearance.match_opacity, border_width=self.appearance.match_rev_border_width)))
 
-        lines.sort()
-        return '\n'.join([x[1] for x in lines])
+        lines.sort(key=itemgetter(0, 1))
+        return '\n'.join([x[-1] for x in lines])
 
 
     def _write_all_svg_matches(self, filehandle):

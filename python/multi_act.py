@@ -29,7 +29,7 @@ def index_to_union(ops, i):
 
 
 def compare_with_blast(qry, ref, ops, outfile):
-    subprocess.check_output('formatdb -l ' + ops.outprefix + '.formatdb.log -p F -i ' + ref, shell=True)
+    subprocess.check_output('formatdb -l ' + os.path.join(ops.outdir, '.formatdb.log') + ' -p F -i ' + ref, shell=True)
     cmd = ' '.join([
         'blastall', ops.blast_ops,
         '-d', ref,
@@ -137,7 +137,10 @@ for i in range(len(options.fa_list)-1):
 for i in range(len(options.fa_list)):
     filename = index_to_union(options, i)
     os.unlink(filename)
-    os.unlink(filename + '.fai')
+    try:
+        os.unlink(filename + '.fai')
+    except:
+        pass
 
 
 # write ACT script

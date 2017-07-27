@@ -1,0 +1,54 @@
+##fileformat=VCFv4.0
+##fileDate=17/06/17
+##phasing=none,though some calls involve phasing clustered variants
+##variants_justified=left
+##ALT=<ID=COMPLEX,Description="Complex variant, collection of SNPs and indels">
+##ALT=<ID=DEL,Description="Deletion">
+##ALT=<ID=DEL_INV,Description="Deletion + Inversion">
+##ALT=<ID=INDEL,Description="Insertion-deletion">
+##ALT=<ID=INS,Description="Insertion of novel sequence">
+##ALT=<ID=INS_INV,Description="Insertion + Inversion">
+##ALT=<ID=INV,Description="Inversion">
+##ALT=<ID=INV_INDEL,Description="Inversion+indel - this script overcalls these, so worth checking">
+##ALT=<ID=PH_SNPS,Description="Phased SNPs">
+##ALT=<ID=SNP,Description="SNP">
+##ALT=<ID=SNP_FROM_COMPLEX,Description="SNP called from a cluster of phased SNPs or complex SNP/indel , split out for easier comparison with other SNP call sets">
+##FILTER=<ID=MAPQ,Description="5prime flank maps to reference with mapping quality below 40">
+##FILTER=<ID=MISMAPPED_UNPLACEABLE,Description="Stampy mapped the variant (using the 5p-flank) confidently (mapqual> 40) to a place where the ref-allele does not match">
+##FILTER=<ID=MULTIALLELIC,Description="Cortex does not call multiallelic sites, but combining run_calls VCFs can produce them. Filtered as current genotyper assumes biallelic.">
+##FILTER=<ID=OVERLAPPING_SITE,Description="If Stampy (or combining VCFs) has placed two biallelic variants overlapping, they are filtered">
+##FORMAT=<ID=COV,Number=2,Type=Integer,Description="Number of reads on ref and alt alleles">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=GT_CONF,Number=1,Type=Float,Description="Genotype confidence. Difference in log likelihood of most likely and next most likely genotype">
+##FORMAT=<ID=SITE_CONF,Number=1,Type=Float,Description="Probabilitic site classification confidence. Difference in log likelihood of most likely and next most likely model (models are variant, repeat and error)">
+##INFO=<ID=KMER,Number=1,Type=Integer,Description="Kmer size at which variant was discovered">
+##INFO=<ID=PV,Number=1,Type=Integer,Description="Possible variation in clean indel position">
+##INFO=<ID=SVLEN,Number=1,Type=Integer,Description="Difference in length between REF and ALT alleles">
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of variant">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	Sample1
+NC_42.1	2	UNION_BC_k31_var_1	TG	T	.	PASS	KMER=31;PV=22;SVLEN=-2;SVTYPE=DEL	GT:COV:GT_CONF	1/1:0,31:21.40  # not in or upstream of a gene
+NC_42.1	17	UNION_BC_k31_var_2	G	GTT	.	PASS	KMER=31;PV=22;SVLEN=3;SVTYPE=INS	GT:COV:GT_CONF	1/1:0,12:12.42  # Insertion upstream of gene1
+NC_42.1	19	UNION_BC_k31_var_3	T	TGG	.	PASS	KMER=31;PV=22;SVLEN=3;SVTYPE=INS	GT:COV:GT_CONF	1/1:0,13:13.42  # Insertion at base before start of gene1
+NC_42.1	20	UNION_BC_k31_var_4	C	CGC	.	PASS	KMER=31;PV=22;SVLEN=3;SVTYPE=INS	GT:COV:GT_CONF	1/1:0,14:14.42  # Insertion at start of gene1
+NC_42.1	25	UNION_BC_k31_var_5	T	TAC	.	PASS	KMER=31;PV=22;SVLEN=3;SVTYPE=INS	GT:COV:GT_CONF	1/1:0,15:15.42  # Insertion inside gene1
+NC_42.1	29	UNION_BC_k31_var_6	C	CT	.	PASS	KMER=31;PV=22;SVLEN=2;SVTYPE=INS	GT:COV:GT_CONF	1/1:0,16:16.42  # Insertion at end of gene1
+NC_42.1	35	UNION_BC_k31_var_7	TGTGG	T	.	PASS	KMER=31;PV=22;SVLEN=-5;SVTYPE=DEL	GT:COV:GT_CONF	1/1:0,17:17.42  # Deletion upstream of gene2
+NC_42.1	36	UNION_BC_k31_var_8	GTGGA	G	.	PASS	KMER=31;PV=22;SVLEN=-5;SVTYPE=DEL	GT:COV:GT_CONF	1/1:0,18:18.42  # Deletion starts upstream of gene2, ends deleting first base of gene
+NC_42.1	38	UNION_BC_k31_var_8	GGAACGCGGTCGT	G	.	PASS	KMER=31;PV=22;SVLEN=-12;SVTYPE=DEL	GT:COV:GT_CONF	1/1:0,19:19.42  # Deletion starts upstream of gene2, ends at last base of gene
+NC_42.1	39	UNION_BC_k31_var_9	GAACGCGGTCGTCTCCGAACTTAACGG	G	.	PASS	KMER=31;PV=22;SVLEN=-27;SVTYPE=DEL	GT:COV:GT_CONF	1/1:0,20:20.42  # Deletion starts upstream of gene2, ends after gene3
+NC_42.1	42	UNION_BC_k31_var_10	CGCG	C	.	PASS	KMER=31;PV=22;SVLEN=-4;SVTYPE=DEL	GT:COV:GT_CONF	1/1:0,21:21.42  # Deletion in gene2
+NC_42.1	43	UNION_BC_k31_var_11	GCGGTCGTCTCCGAACTTAAC	G	.	PASS	KMER=31;PV=22;SVLEN=-21;SVTYPE=DEL	GT:COV:GT_CONF	1/1:0,22:22.42  # Deletion starts in gene2, ends in gene3
+NC_42.1	113	UNION_BC_k31_var_12	C	CTG	.	PASS	KMER=31;PV=22;SVLEN=2;SVTYPE=INS	GT:COV:GT_CONF	1/1:0,23:23.42  # Insertion upstream of gene4 (which is on reverse stand)
+NC_42.1	110	UNION_BC_k31_var_13	G	GTA	.	PASS	KMER=31;PV=22;SVLEN=2;SVTYPE=INS	GT:COV:GT_CONF	1/1:0,24:24.42  # Insertion at base before start of gene4
+NC_42.1	109	UNION_BC_k31_var_14	A	ATCG	.	PASS	KMER=31;PV=22;SVLEN=3;SVTYPE=INS	GT:COV:GT_CONF	1/1:0,25:25.42  # Insertion at start of gene4
+NC_42.1	105	UNION_BC_k31_var_15	T	TAG	.	PASS	KMER=31;PV=22;SVLEN=2;SVTYPE=INS	GT:COV:GT_CONF	1/1:0,26:26.42  # Insertion inside gene4
+NC_42.1	100	UNION_BC_k31_var_16	G	GTA	.	PASS	KMER=31;PV=22;SVLEN=2;SVTYPE=INS	GT:COV:GT_CONF	1/1:0,27:27.42  # Insertion at end of gene4
+NC_42.1	135	UNION_BC_k31_var_17	GGC	G	.	PASS	KMER=31;PV=22;SVLEN=-3;SVTYPE=DEL	GT:COV:GT_CONF	1/1:0,27:27.42  # Deletion upstream of gene5
+NC_42.1	129	UNION_BC_k31_var_17	GCAAAG	G	.	PASS	KMER=31;PV=22;SVLEN=-6;SVTYPE=DEL	GT:COV:GT_CONF	1/1:0,28:28.42  # Deletion starts upstream of gene5, end deleting first base of gene
+NC_42.1	119	UNION_BC_k31_var_18	TGACCCCTCAGCAAAG	T	.	PASS	KMER=31;PV=22;SVLEN=-16;SVTYPE=DEL	GT:COV:GT_CONF	1/1:0,29:29.42  # Deletion starts upstream of gene5, ends at last base of gene
+NC_42.1	118	UNION_BC_k31_var_19	CTGACCCCTCAGCAAAGGGCTTGGCTCAATCTCGT	C	.	PASS	KMER=31;PV=22;SVLEN=-35;SVTYPE=DEL	GT:COV:GT_CONF	1/1:0,30:30.42  # Deletion starts upstream of gene2, ends after gene3
+NC_42.1	125	UNION_BC_k31_var_19	CTCA	C	.	PASS	KMER=31;PV=22;SVLEN=-4;SVTYPE=DEL	GT:COV:GT_CONF	1/1:0,31:31.42  # Deletion in gene5
+NC_42.1	126	UNION_BC_k31_var_20	TCAGCAAAGGGCTTGGCT	T	.	PASS	KMER=31;PV=22;SVLEN=-18;SVTYPE=DEL	GT:COV:GT_CONF	1/1:0,32:32.42  # Deletion starts in gene5, ends in gene6
+NC_42.1	195	UNION_BC_k31_var_21	GCCGA	GTTA	.	PASS	KMER=31;PV=22;SVLEN=-5;SVTYPE=COMPLEX	GT:COV:GT_CONF	1/1:0,32:32.42  # Complex insertion/deletion upstream of gene7
+NC_42.1	196	UNION_BC_k31_var_22	CCGAGCAG	GTTAA	.	PASS	KMER=31;PV=22;SVLEN=-5;SVTYPE=COMPLEX	GT:COV:GT_CONF	1/1:0,33:33.42  # Complex insertion/deletion upstream/in gene 7
+NC_42.1	225	UNION_BC_k31_var_23	GCGCCATCTGC	GTACTG	.	PASS	KMER=31;PV=22;SVLEN=-5;SVTYPE=COMPLEX	GT:COV:GT_CONF	1/1:0,34:34.42  # Complex insertion/deletion upstream/in gene 8 (reverse strand)

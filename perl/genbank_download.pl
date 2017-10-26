@@ -1,7 +1,6 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use LWP::Simple;
 
 if ($#ARGV != 2) {
     die qq/usage: genbank_downloader.pl filetype id outfile
@@ -19,7 +18,8 @@ my $id=$ARGV[1];
 my $out=$ARGV[2];
 
 # file has an empty line at the end, so need to remove it
-my $file_contents = get("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&rettype=$filetype&retmode=text&id=$id");
+my $file_contents = `curl 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&rettype=$filetype&retmode=text&id=$id'`;
+die unless $file_contents =~ /^>/;
 chomp $file_contents;
 open F, ">$out" or die $!;
 print F $file_contents;

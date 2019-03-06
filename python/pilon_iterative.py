@@ -89,7 +89,7 @@ def check_file_exists(to_check, filename_for_log):
 
 
 parser = argparse.ArgumentParser(
-    description = 'Iteratively run pilon to correct assembly',
+    description = 'Iteratively run pilon to correct assembly. Stops after 10 (default) iterations, or if no changes made',
     usage='%(prog)s <assembly_fasta> <reads1> <reads2> <outdir>')
 
 parser.add_argument('--pilon_java_xmx', default='8G', help='Option used with -Xmx when running javar pilon.jar [%(default)s]', metavar='STRING')

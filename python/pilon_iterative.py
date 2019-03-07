@@ -123,6 +123,7 @@ log.addHandler(fh)
 check_file_exists(options.assembly_fasta, 'assembly_fasta')
 check_file_exists(options.reads1, 'reads1')
 check_file_exists(options.reads2, 'reads2')
+latest_corrected_fasta = 'last_iteration.corrected.fasta'
 
 
 for i in range(1, options.max_iterations + 1, 1):
@@ -140,6 +141,11 @@ for i in range(1, options.max_iterations + 1, 1):
     number_of_changes = number_of_pilon_changes(files['changes_file'])
     logging.info(f'Number of changes at iteration {i}: {number_of_changes}')
     touch_file(files['done_file'])
+
+    if os.path.exists(latest_corrected_fasta):
+        os.unlink(latest_corrected_fasta)
+    assert os.path.exists(files['corrected_fasta'])
+    os.symlink(files['corrected_fasta'], latest_corrected_fasta)
     logging.info(f'End iteration {i}')
 
     if number_of_changes == 0:

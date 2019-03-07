@@ -7,6 +7,22 @@ import os
 import subprocess
 
 
+def remove_pilon_from_fasta_headers(infile, outfile, number_of_pilons):
+    '''Each time you run pilon, it adds "_pilon" to the end of each
+    contig name. This makes a new file with them removed, and adds
+    ".{number_of_pilons}_pilon_iterations" instead'''
+    expect_suffix = '_pilon' * number_of_pilons
+
+    with open(infile) as f_in, open(outfile, 'w') as f_out:
+        for line in f_in:
+            if line.startswith('>'):
+                line = line.rstrip()
+                assert line.endswith(expect_suffix)
+                line = line[0:-len(expect_suffix)] + f'.{number_of_pilons}_pilon_iterations\n'
+
+            print(line, end='', file=f_out)
+
+
 def touch_file(filename):
     with open(filename, 'a'):
         pass
@@ -123,7 +139,6 @@ log.addHandler(fh)
 check_file_exists(options.assembly_fasta, 'assembly_fasta')
 check_file_exists(options.reads1, 'reads1')
 check_file_exists(options.reads2, 'reads2')
-latest_corrected_fasta = 'last_iteration.corrected.fasta'
 
 
 for i in range(1, options.max_iterations + 1, 1):
@@ -141,16 +156,14 @@ for i in range(1, options.max_iterations + 1, 1):
     number_of_changes = number_of_pilon_changes(files['changes_file'])
     logging.info(f'Number of changes at iteration {i}: {number_of_changes}')
     touch_file(files['done_file'])
-
-    if os.path.exists(latest_corrected_fasta):
-        os.unlink(latest_corrected_fasta)
-    assert os.path.exists(files['corrected_fasta'])
-    os.symlink(files['corrected_fasta'], latest_corrected_fasta)
     logging.info(f'End iteration {i}')
 
     if number_of_changes == 0:
         logging.info(f'No changes made in iteration {i}. Stopping')
+        logging.info('Making final corrected file final.fasta with renamed contigs')
+        remove_pilon_from_fasta_headers(files['corrected_fasta'], 'final.fasta', i)
         break
+
 
 logging.info('Finished')
 

@@ -4,10 +4,11 @@ use strict;
 use warnings;
 
 
-@ARGV == 2 or die "usage: $0 <in.bam> <out.bed>\nOutputs BED file of low quality regions (where no read coverage or most common nucleotide is <95\% of total depth at a position)";
+@ARGV == 3 or die "usage: $0 <depth_cutoff in [0,100]> <in.bam> <out.bed>\nOutputs BED file of low quality regions (where no read coverage or most common nucleotide is < depth_cutoff\% of total depth at a position)";
 
-my $bam = $ARGV[0];
-my $outfile = $ARGV[1];
+my $min_percent_depth = $ARGV[0];
+my $bam = $ARGV[1];
+my $outfile = $ARGV[2];
 
 open my $f_in, "samtools mpileup -aa $bam |" or die $!;
 open my $f_out, "> $outfile" or die $!;
@@ -22,7 +23,7 @@ print STDERR "Gathering depths from mpileup.\n";
 while (<$f_in>) {
     my @a = split;
     print STDERR "$a[0] $a[1]\n" if ($a[1] == 1 or $a[1] % 100000 == 0);
-    my $is_good = pileup_array_line_is_good(\@a);
+    my $is_good = pileup_array_line_is_good($min_percent_depth, \@a);
     if ($is_good and $current_contig eq "") {
         next;
     }
@@ -59,6 +60,7 @@ close $f_out or die $!;
 
 
 sub pileup_array_line_is_good {
+    my $min_depth_percent = shift;
     my $array = shift;
     return 0 if ($array->[3] == 0);
     my %nuc_counts = (A => 0, G => 0, C => 0, T => 0);
@@ -72,6 +74,6 @@ sub pileup_array_line_is_good {
     return 0 if $total < 1;
     return 1 if 1 == scalar keys %nuc_counts;
     my @counts = reverse sort {$a <=> $b} values %nuc_counts;
-    return ($counts[0] / $total) >= 0.95;
+    return (100 * $counts[0] / $total) >= $min_depth_percent;
 }
 

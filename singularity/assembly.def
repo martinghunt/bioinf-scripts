@@ -1,0 +1,97 @@
+BootStrap: debootstrap
+OSVersion: bionic
+MirrorURL: http://us.archive.ubuntu.com/ubuntu/
+
+%environment
+PATH=/bioinf-tools/:/bioinf-tools/bioinf-scripts/python/:/bioinf-tools/bioinf-scripts/perl/:$PATH
+
+
+%post
+    apt-get update
+    apt-get install -y software-properties-common
+    apt-add-repository universe
+    apt-get update
+
+    apt-get install -y \
+      artemis \
+      bowtie2 \
+      build-essential \
+      cmake \
+      curl \
+      cython \
+      git \
+      libarchive-dev \
+      liblzma-dev \
+      libbz2-dev \
+      libcurl4-openssl-dev \
+      libhts-dev \
+      libncurses5-dev \
+      libncursesw5-dev \
+      ncbi-blast+ \
+      ncbi-blast+-legacy \
+      openjdk-11-jre \
+      python \
+      python-setuptools \
+      python-numpy \
+      python-pip \
+      python-pysam \
+      python3 \
+      python3-pip \
+      python3-pysam \
+      python3-setuptools \
+      samtools \
+      spades \
+      wget \
+      zlib1g-dev
+
+    mkdir /bioinf-tools
+
+
+    # ---------------------- assembly-stats -----------------------------------
+    cd /bioinf-tools
+    wget https://github.com/sanger-pathogens/assembly-stats/archive/v1.0.1-docker1.tar.gz
+    tar xf v1.0.1-docker1.tar.gz
+    rm v1.0.1-docker1.tar.gz
+    cd assembly-stats-1.0.1-docker1/
+    mkdir build
+    cd build
+    cmake ..
+    make
+    make install
+
+
+    # ---------------------- pbh5tools ----------------------------------------
+    cd /bioinf-tools
+    git clone https://github.com/PacificBiosciences/pbh5tools.git
+    cd pbh5tools/
+    python setup.py install
+
+
+    # ---------------------- pilon --------------------------------------------
+    cd /bioinf-tools
+    wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar
+
+
+    # ---------------------- unicycler ----------------------------------------
+    cd /bioinf-tools
+    wget https://github.com/rrwick/Unicycler/archive/v0.4.8.tar.gz
+    tar xf v0.4.8.tar.gz
+    rm v0.4.8.tar.gz
+    cd Unicycler-0.4.8/
+    python3 setup.py install
+
+
+    # ---------------------- mummer -------------------------------------------
+    cd /bioinf-tools
+    wget https://github.com/mummer4/mummer/releases/download/v4.0.0beta2/mummer-4.0.0beta2.tar.gz
+    tar xf mummer-4.0.0beta2.tar.gz
+    rm mummer-4.0.0beta2.tar.gz
+    cd mummer-4.0.0beta2/
+    ./configure
+    make
+    make install
+
+
+%labels
+    Version 0.1.0
+

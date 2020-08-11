@@ -72,6 +72,17 @@ PATH=/bioinf-tools/:/bioinf-tools/bioinf-scripts/python/:/bioinf-tools/bioinf-sc
     wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar
 
 
+    # ---------------------- racon --------------------------------------------
+    cd /bioinf-tools
+    git clone --recursive https://github.com/lbcb-sci/racon.git racon
+    cd racon
+    mkdir build
+    cd build
+    cmake -DCMAKE_BUILD_TYPE=Release ..
+    make
+    make install
+    exit
+
     # ---------------------- unicycler ----------------------------------------
     cd /bioinf-tools
     wget https://github.com/rrwick/Unicycler/archive/v0.4.8.tar.gz

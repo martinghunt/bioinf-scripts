@@ -3,7 +3,7 @@ OSVersion: bionic
 MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 
 %environment
-PATH=/bioinf-tools/:/bioinf-tools/bioinf-scripts/python/:/bioinf-tools/bioinf-scripts/perl/:/bioinf-tools/canu-2.0/Linux-amd64/bin/canu/:$PATH
+PATH=/bioinf-tools/:/bioinf-tools/bioinf-scripts/python/:/bioinf-tools/bioinf-scripts/perl/:/bioinf-tools/canu-2.0/Linux-amd64/bin/:$PATH
 
 
 %post

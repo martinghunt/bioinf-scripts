@@ -60,6 +60,17 @@ PATH=/bioinf-tools/:/bioinf-tools/bioinf-scripts/python/:/bioinf-tools/bioinf-sc
     make install
 
 
+    #__________________________ BWA____________________________#
+    cd /bioinf-tools
+    wget https://github.com/lh3/bwa/releases/download/v0.7.15/bwa-0.7.15.tar.bz2
+    tar xf bwa-0.7.15.tar.bz2
+    rm bwa-0.7.15.tar.bz2
+    cd bwa-0.7.15/
+    make
+    cd ..
+    cp -s bwa-0.7.15/bwa .
+
+
     # ---------------------- pbh5tools ----------------------------------------
     cd /bioinf-tools
     git clone https://github.com/PacificBiosciences/pbh5tools.git

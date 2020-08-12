@@ -4,6 +4,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 
 %environment
 PATH=/bioinf-tools/:/bioinf-tools/bioinf-scripts/python/:/bioinf-tools/bioinf-scripts/perl/:/bioinf-tools/canu-2.0/Linux-amd64/bin/:$PATH
+LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
 
 %post

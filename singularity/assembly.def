@@ -3,7 +3,7 @@ OSVersion: bionic
 MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 
 %environment
-PATH=/bioinf-tools/:/bioinf-tools/bioinf-scripts/python/:/bioinf-tools/bioinf-scripts/perl/:$PATH
+PATH=/bioinf-tools/:/bioinf-tools/bioinf-scripts/python/:/bioinf-tools/bioinf-scripts/perl/:/bioinf-tools/canu-2.0/Linux-amd64/bin/canu/:$PATH
 
 
 %post
@@ -71,6 +71,12 @@ PATH=/bioinf-tools/:/bioinf-tools/bioinf-scripts/python/:/bioinf-tools/bioinf-sc
     cp -s bwa-0.7.15/bwa .
 
 
+    # --------------------------- canu ----------------------------------------
+    cd /bioinf-tools
+	wget https://github.com/marbl/canu/releases/download/v2.0/canu-2.0.Linux-amd64.tar.xz
+    tar xf canu-2.0.Linux-amd64.tar.xz
+
+
 	# ------------------------- prodigal --------------------------------------
     cd /bioinf-tools
 	wget -O prodigal https://github.com/hyattpd/Prodigal/releases/download/v2.6.3/prodigal.linux
@@ -116,6 +122,10 @@ PATH=/bioinf-tools/:/bioinf-tools/bioinf-scripts/python/:/bioinf-tools/bioinf-sc
     ./configure
     make
     make install
+
+
+	# ---------------------- python -------------------------------------------
+	pip3 install circlator
 
 
 %labels

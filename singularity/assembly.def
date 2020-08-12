@@ -60,7 +60,7 @@ PATH=/bioinf-tools/:/bioinf-tools/bioinf-scripts/python/:/bioinf-tools/bioinf-sc
     make install
 
 
-    #__________________________ BWA____________________________#
+    # --------------------------- bwa -----------------------------------------
     cd /bioinf-tools
     wget https://github.com/lh3/bwa/releases/download/v0.7.15/bwa-0.7.15.tar.bz2
     tar xf bwa-0.7.15.tar.bz2
@@ -70,6 +70,11 @@ PATH=/bioinf-tools/:/bioinf-tools/bioinf-scripts/python/:/bioinf-tools/bioinf-sc
     cd ..
     cp -s bwa-0.7.15/bwa .
 
+
+	# ------------------------- prodigal --------------------------------------
+    cd /bioinf-tools
+	wget -O prodigal https://github.com/hyattpd/Prodigal/releases/download/v2.6.3/prodigal.linux
+	chmod 755 prodigal
 
     # ---------------------- pbh5tools ----------------------------------------
     cd /bioinf-tools

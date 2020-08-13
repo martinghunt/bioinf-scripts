@@ -19,7 +19,6 @@ my $out=$ARGV[2];
 
 # file has an empty line at the end, so need to remove it
 my $file_contents = `curl 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&rettype=$filetype&retmode=text&id=$id'`;
-die unless $file_contents =~ /^>/;
 chomp $file_contents;
 open F, ">$out" or die $!;
 print F $file_contents;

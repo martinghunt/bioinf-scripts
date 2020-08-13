@@ -67,7 +67,7 @@ def make_pilon_bam(reads1, reads2, ref_fasta, outprefix, threads=1):
         assert os.path.exists(sorted_bam)
         return sorted_bam
 
-    log_and_run_command(f'bwa mem -t {threads} -x intractg {ref_fasta} {reads1} {reads2} > {sam_file}')
+    log_and_run_command(f'bwa mem -t {threads} {ref_fasta} {reads1} {reads2} > {sam_file}')
     log_and_run_command(f'samtools sort --threads {threads} --reference {ref_fasta} -o {sorted_bam} {sam_file}')
     os.unlink(sam_file)
     log_and_run_command(f'samtools index {sorted_bam}')
@@ -160,10 +160,15 @@ for i in range(1, options.max_iterations + 1, 1):
 
     if number_of_changes == 0:
         logging.info(f'No changes made in iteration {i}. Stopping')
-        logging.info('Making final corrected file final.fasta with renamed contigs')
-        remove_pilon_from_fasta_headers(files['corrected_fasta'], 'final.fasta', i)
         break
+    elif i >= options.max_iterations:
+            logging.info(f"Reached max. iteration number of {options.max_iterations}. Stopping")
+            break
+    else:
+        logging.info(f"End of iteration {i}. Continuing")
 
 
+logging.info('Making final corrected file final.fasta with renamed contigs')
+remove_pilon_from_fasta_headers(files['corrected_fasta'], 'final.fasta', i)
 logging.info('Finished')
 

@@ -78,10 +78,10 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
     tar xf canu-2.0.Linux-amd64.tar.xz
 
 
-	# ------------------------- prodigal --------------------------------------
+    # ------------------------- prodigal --------------------------------------
     cd /bioinf-tools
-	wget -O prodigal https://github.com/hyattpd/Prodigal/releases/download/v2.6.3/prodigal.linux
-	chmod 755 prodigal
+    wget -O prodigal https://github.com/hyattpd/Prodigal/releases/download/v2.6.3/prodigal.linux
+    chmod 755 prodigal
 
     # ---------------------- pbh5tools ----------------------------------------
     cd /bioinf-tools
@@ -125,8 +125,8 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
     make install
 
 
-	# ---------------------- python -------------------------------------------
-	pip3 install circlator
+    # ---------------------- python -------------------------------------------
+    pip3 install circlator
 
 
 %labels

@@ -3,7 +3,7 @@ OSVersion: bionic
 MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 
 %environment
-PATH=/bioinf-tools/:/bioinf-tools/bioinf-scripts/python/:/bioinf-tools/bioinf-scripts/perl/:/bioinf-tools/canu-2.0/Linux-amd64/bin/:$PATH
+PATH=/bioinf-tools/:/bioinf-tools/bioinf-scripts/python/:/bioinf-tools/bioinf-scripts/perl/:/bioinf-tools/canu-2.1.1/bin/:$PATH
 LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
 
@@ -45,6 +45,8 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
       wget \
       zlib1g-dev
 
+    pip install h5py==2.10.0
+
     mkdir /bioinf-tools
 
 
@@ -74,8 +76,9 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
     # --------------------------- canu ----------------------------------------
     cd /bioinf-tools
-	wget https://github.com/marbl/canu/releases/download/v2.0/canu-2.0.Linux-amd64.tar.xz
-    tar xf canu-2.0.Linux-amd64.tar.xz
+    wget https://github.com/marbl/canu/releases/download/v2.1.1/canu-2.1.1.Linux-amd64.tar.xz
+    tar xf canu-2.1.1.Linux-amd64.tar.xz
+    rm canu-2.1.1.Linux-amd64.tar.xz
 
 
     # ------------------------- prodigal --------------------------------------

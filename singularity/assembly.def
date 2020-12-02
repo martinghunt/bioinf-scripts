@@ -40,6 +40,7 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
       python3-pip \
       python3-pysam \
       python3-setuptools \
+      reapr \
       samtools \
       spades \
       wget \
@@ -133,5 +134,5 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
 
 %labels
-    Version 0.1.0
+    Version 0.2.0
 

@@ -30,10 +30,12 @@ def info_from_gi(gi):
         "KEYWORDS": [],
         "SOURCE": None,
         "VERSION": None,
+        "identical_to": None,
     }
 
 
     in_dblink = False
+    in_identical = False
     general_names = {"KEYWORDS", "SOURCE", "VERSION"}
 
     for line in r.text.split("\n"):
@@ -47,6 +49,14 @@ def info_from_gi(gi):
         elif in_dblink:
             line = line.split()
             results["DBLINK"][line[0].rstrip(":")] = " ".join(line[1:])
+            continue
+
+
+        if line.startswith("COMMENT     REFSEQ INFORMATION: The reference sequence is identical to"):
+            in_identical = True
+        elif in_identical:
+            results["identical_to"] = line.strip().rstrip(".")
+            in_identical = False
             continue
 
         fields = line.split()
@@ -100,7 +110,7 @@ results = info_from_gis(gi_list)
 if options.outfmt == "json":
     print(json.dumps(results, indent=2))
 else:
-    print("GI", "ACCESSION", "VERSION", "Assembly", "SOURCE", "KEYWORDS", sep="\t")
+    print("GI", "ACCESSION", "VERSION", "Assembly", "SOURCE", "KEYWORDS", "identical_to", sep="\t")
     for gi, d in results.items():
         if d["ACCESSION"] is None:
             accession = "None"
@@ -113,5 +123,6 @@ else:
             d["DBLINK"].get("Assembly", None),
             d["SOURCE"],
             d["KEYWORDS"],
+            d["identical_to"],
             sep="\t"
         )

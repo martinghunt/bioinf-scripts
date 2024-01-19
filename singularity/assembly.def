@@ -134,5 +134,5 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
 
 %labels
-    Version 0.2.0
+    Version 0.2.1
 

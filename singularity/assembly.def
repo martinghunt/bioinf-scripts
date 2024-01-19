@@ -87,11 +87,12 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
     wget -O prodigal https://github.com/hyattpd/Prodigal/releases/download/v2.6.3/prodigal.linux
     chmod 755 prodigal
 
+    # Commented out because the repository no longer exists?!
     # ---------------------- pbh5tools ----------------------------------------
-    cd /bioinf-tools
-    git clone https://github.com/PacificBiosciences/pbh5tools.git
-    cd pbh5tools/
-    python setup.py install
+    #cd /bioinf-tools
+    #git clone https://github.com/PacificBiosciences/pbh5tools.git
+    #cd pbh5tools/
+    #python setup.py install
 
 
     # ---------------------- pilon --------------------------------------------

@@ -96,7 +96,7 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
     # ---------------------- pilon --------------------------------------------
     cd /bioinf-tools
-    wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar
+    wget https://github.com/broadinstitute/pilon/releases/download/v1.24/pilon-1.24.jar
 
 
     # ---------------------- racon --------------------------------------------

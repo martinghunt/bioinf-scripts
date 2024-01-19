@@ -66,13 +66,13 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
     # --------------------------- bwa -----------------------------------------
     cd /bioinf-tools
-    wget https://github.com/lh3/bwa/releases/download/v0.7.15/bwa-0.7.15.tar.bz2
-    tar xf bwa-0.7.15.tar.bz2
-    rm bwa-0.7.15.tar.bz2
-    cd bwa-0.7.15/
+    wget https://github.com/lh3/bwa/releases/download/v0.7.17/bwa-0.7.17.tar.bz2
+    tar xf bwa-0.7.17.tar.bz2
+    rm bwa-0.7.17.tar.bz2
+    cd bwa-0.7.17/
     make
     cd ..
-    cp -s bwa-0.7.15/bwa .
+    cp -s bwa-0.7.17/bwa .
 
 
     # --------------------------- canu ----------------------------------------

@@ -4,6 +4,7 @@ import sys
 import argparse
 import pyfastaq
 import pymummer
+import shutil
 import subprocess
 import os
 
@@ -12,6 +13,8 @@ parser = argparse.ArgumentParser(
                    Then start ACT. Files from top to bottom in ACT are same as order
                    listed on command line when this script is run.''',
     usage = '%(prog)s [options] <blast|nucmer|promer> <outdir> <file1.fa> <file2.fa>  [<file3.fa ...]')
+parser.add_argument('--self_contained', action='store_true', help="Copy all input files into output directory, so the whole output is self-contained and doesn't rely on the original input")
+parser.add_argument('--zip', action='store_true', help="Make a zip archive of the output files, called <outdir>.zip. Forces --self_contained")
 parser.add_argument('--blast_ops', help='blastall options [%(default)s]', default='-p blastn -m 8 -F F -e 0.01 -b 10000 -v 10000')
 parser.add_argument('--nucmer_ops', help='nucmer or promer options [promer:--maxmatch. nucmer: --maxmatch --nosimplify]')
 parser.add_argument('--no_delta_filter', action='store_true')
@@ -102,7 +105,14 @@ except:
     sys.exit(1)
 
 
+
+if options.zip:
+    print("--zip used, forcing --self_contained")
+    options.self_contained = True
+
 # make union files
+fastas_for_act = []
+
 for i in range(len(options.fa_list)):
     seq = pyfastaq.sequences.Fasta('union', '')
     reader = pyfastaq.sequences.file_reader(options.fa_list[i])
@@ -114,8 +124,17 @@ for i in range(len(options.fa_list)):
     print(seq, file=f)
     pyfastaq.utils.close(f)
 
+    if options.self_contained:
+        fa_for_act = f"{i}." + os.path.basename(options.fa_list[i])
+        shutil.copy(options.fa_list[i], os.path.join(options.outdir, fa_for_act))
+    else:
+        fa_for_act = options.fa_list[i]
 
-act_command = 'act ' + options.fa_list[0]
+    fastas_for_act.append(fa_for_act)
+
+
+
+act_command = 'act ' + fastas_for_act[0]
 
 # run alignments
 for i in range(len(options.fa_list)-1):
@@ -131,7 +150,7 @@ for i in range(len(options.fa_list)-1):
     else:
         sys.exit('Unknown alignment tool:' + options.aln_tool)
 
-    act_command += ' ' + outfile + ' ' + options.fa_list[i+1]
+    act_command += ' ' + outfile + ' ' + fastas_for_act[i+1]
 
 # delete temporary union files
 for i in range(len(options.fa_list)):
@@ -144,13 +163,13 @@ for i in range(len(options.fa_list)):
 
 
 # write ACT script
-try:
-    os.chdir(options.outdir)
-except:
-    print('Error chdir', options.outdir)
-    sys.exit(1)
+#try:
+#    os.chdir(options.outdir)
+#except:
+#    print('Error chdir', options.outdir)
+#    sys.exit(1)
 
-act_script = 'start_act.sh'
+act_script = os.path.join(options.outdir, 'start_act.sh')
 with open(act_script, 'w') as f:
     print('#!/usr/bin/env bash', file=f)
     print('set -e', file=f)
@@ -159,6 +178,15 @@ with open(act_script, 'w') as f:
     print(act_command, file=f)
 os.chmod(act_script, 0o755)
 
-if not options.no_act:
-    subprocess.check_output('./' + act_script, shell=True)
+if options.zip:
+    assert options.self_contained
+    outdir = os.path.abspath(options.outdir)
+    zip_out = outdir + ".zip"
+    parent_dir, basename = os.path.split(outdir)
+    command = f"zip -r {zip_out} {basename}"
+    subprocess.check_output(command, shell=True, cwd=parent_dir)
+    shutil.rmtree(outdir)
+elif not options.no_act:
+    os.chdir(options.outdir)
+    subprocess.check_output('./start_act.sh', shell=True)
 

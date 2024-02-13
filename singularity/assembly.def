@@ -20,6 +20,7 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
       curl \
       cython3 \
       git \
+      hmmer \
       libarchive-dev \
       liblzma-dev \
       libbz2-dev \
@@ -43,7 +44,6 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
     pip install h5py==2.10.0
 
     mkdir /bioinf-tools
-
 
     # ---------------------- assembly-stats -----------------------------------
     cd /bioinf-tools
@@ -145,5 +145,5 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
 
 %labels
-    Version 0.3.0
+    Version 0.3.1
 

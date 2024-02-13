@@ -76,6 +76,17 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
     rm canu-2.2.Linux-amd64.tar.xz
 
 
+
+    # ------------------------- pplacer ---------------------------------------
+    # needed for checkM
+    cd /bioinf-tools
+    wget https://github.com/matsen/pplacer/releases/download/v1.1.alpha19/pplacer-linux-v1.1.alpha19.zip
+    unzip pplacer-linux-v1.1.alpha19.zip
+    cp -s pplacer-Linux-v1.1.alpha19/guppy .
+    cp -s pplacer-Linux-v1.1.alpha19/pplacer .
+    cp -s pplacer-Linux-v1.1.alpha19/rppr .
+
+
     # ------------------------- prodigal --------------------------------------
     cd /bioinf-tools
     wget -O prodigal https://github.com/hyattpd/Prodigal/releases/download/v2.6.3/prodigal.linux
@@ -122,6 +133,11 @@ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
     ./configure
     make
     make install
+
+
+    # ---------------------- checkM -------------------------------------------
+    python3 -m pip install numpy matplotlib pysam
+    python3 -m pip install checkm-genome
 
 
     # ---------------------- python -------------------------------------------

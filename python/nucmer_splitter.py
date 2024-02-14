@@ -30,7 +30,7 @@ parser.add_argument(
 parser.add_argument(
     "--delta_opts",
     metavar="STR",
-    default="-i 80 -l 100",
+    default="-i 80 -l 100 -m",
     help="delta-filter options string. This is passed straight into delta-filter, not sanity checked [%(default)s]",
 )
 parser.add_argument(

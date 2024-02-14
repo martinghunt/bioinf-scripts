@@ -6,6 +6,16 @@ import os
 import subprocess
 
 
+def delta_file_has_a_hit(delta_file):
+    with open(delta_file) as f:
+        for i, line in enumerate(f):
+            if i == 1:
+                assert line == "NUCMER\n"
+            elif i > 1:
+                return True
+    return False
+
+
 parser = argparse.ArgumentParser(
     description="Run nucmer on reference split across multiple fasta files",
     usage="%(prog)s [options] <ref_dir> <query> <outdir>",
@@ -96,9 +106,17 @@ for i, ref in enumerate(ref_files):
     logging.info(f"  running nucmer: {command}")
     subprocess.check_output(command, shell=True, cwd=options.outdir)
 
+    if not delta_file_has_a_hit(os.path.join(options.outdir, delta_file)):
+        logging.info(f"  no hits in {delta_file}. Moving on to next ref file")
+        continue
+
     command = f"delta-filter {options.delta_opts} {delta_file} > {delta_file}.filter"
     logging.info(f"  running delta-filter: {command}")
     subprocess.check_output(command, shell=True, cwd=options.outdir)
+
+    if not delta_file_has_a_hit(os.path.join(options.outdir, f"{delta_file}.filter")):
+        logging.info(f"  no hits in {delta_file}.filter. Moving on to next ref file")
+        continue
 
     command = f"show-coords -HdTlro {delta_file}.filter >> {coords_file}"
     logging.info(f"  running show-coords: {command}")

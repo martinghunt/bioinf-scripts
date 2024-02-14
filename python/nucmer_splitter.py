@@ -58,6 +58,17 @@ if len(ref_files) == 0:
     raise Exception(f"No files found in reference directory {options.ref_dir}")
 
 os.mkdir(options.outdir)
+
+if options.query.endswith(".gz"):
+    new_query = os.path.join(options.outdir, "qry.fa")
+    command = f"gunzip -c {options.query} > {new_query}"
+    logging.info(f"Query is gzipped. Extracting: {command}")
+    subprocess.check_output(command, shell=True)
+    options.query = "qry.fa"
+else:
+    new_query = None
+
+
 coords_file = "nucmer.coords"
 coords_cols = [
     "[S1]",
@@ -92,5 +103,10 @@ for i, ref in enumerate(ref_files):
     command = f"show-coords -HdTlro {delta_file}.filter >> {coords_file}"
     logging.info(f"  running show-coords: {command}")
     subprocess.check_output(command, shell=True, cwd=options.outdir)
+
+if new_query is not None:
+    logging.info(f"Deleting twmporary unzipped query file {new_query}")
+    os.unlink(new_query)
+
 
 logging.info(f"Finished \N{thumbs up sign}")

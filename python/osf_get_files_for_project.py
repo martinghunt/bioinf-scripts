@@ -72,7 +72,7 @@ def print_tsv(results):
                 d["attributes"]["materialized_path"].lstrip("/"),
                 d["links"]["download"],
                 d["attributes"]["extra"]["hashes"]["md5"],
-                round(float(d["attributes"]["size"]) / (1024 * 1024), 1),
+                round(float(d["attributes"]["size"]) / (1024 * 1024), 2),
             )
         )
     lines_out.sort()

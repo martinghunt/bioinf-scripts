@@ -6,8 +6,10 @@ import requests
 import json
 
 
-def get_one_page_of_data(project_id, page=1):
+def get_one_page_of_data(project_id, path=None, page=1):
     url = f"https://api.osf.io/v2/nodes/{project_id}/files/osfstorage"
+    if path is not None:
+        url += f"/{path}/"
     opts = {"page[size]": 100, "page": page}
     logging.info(f"Getting url: {url} {opts}")
     response = requests.get(url, opts)
@@ -15,14 +17,14 @@ def get_one_page_of_data(project_id, page=1):
         logging.info(f"Got {response.url}")
         return response.json()
     else:
-        raise Exception(f"Error getting url: {r.url}")
+        raise Exception(f"Error getting url: {response.url}")
 
 
-def get_all_data(project_id):
+def get_all_data(project_id, path=None):
     page = 1
     results = []
     while True:
-        new_results = get_one_page_of_data(project_id, page=page)
+        new_results = get_one_page_of_data(project_id, path=path, page=page)
         try:
             next_link = new_results["links"]["next"]
         except:
@@ -38,12 +40,36 @@ def get_all_data(project_id):
     return results
 
 
+def get_files_from_folders_iter(project_id, results):
+    to_replace = {}
+    for i, d in enumerate(results):
+        if d["attributes"]["kind"] == "file":
+            continue
+        elif d["attributes"]["kind"] == "folder":
+            path = d["attributes"]["path"].replace("/", "")
+            to_replace[i] = get_all_data(project_id, path=path)
+        else:
+            raise NotImplementedError(
+                f"Unknown attribute/kind: {d['attributes']['kind']}\n{d}"
+            )
+
+    for i in reversed(sorted(list(to_replace.keys()))):
+        results[i : i + 1] = to_replace[i]
+
+    return len(to_replace) > 0
+
+
+def get_files_from_folders(project_id, results):
+    while get_files_from_folders_iter(project_id, results):
+        pass
+
+
 def print_tsv(results):
     lines_out = []
     for d in results:
         lines_out.append(
             (
-                d["attributes"]["name"],
+                d["attributes"]["materialized_path"].lstrip("/"),
                 d["links"]["download"],
                 d["attributes"]["extra"]["hashes"]["md5"],
                 round(float(d["attributes"]["size"]) / (1024 * 1024), 1),
@@ -72,6 +98,8 @@ log = logging.getLogger()
 log.setLevel(logging.INFO)
 
 results = get_all_data(options.project_id)
+logging.info("Getting folders...")
+get_files_from_folders(options.project_id, results)
 
 if options.format == "json":
     print(json.dumps(results, indent=2))

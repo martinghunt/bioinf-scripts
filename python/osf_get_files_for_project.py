@@ -64,19 +64,24 @@ def get_files_from_folders(project_id, results):
         pass
 
 
-def print_tsv(results):
+def print_tsv(results, size_in_bytes=False):
     lines_out = []
     for d in results:
+        if size_in_bytes:
+            size = d["attributes"]["size"]
+        else:
+            size = round(float(d["attributes"]["size"]) / (1024 * 1024), 2)
         lines_out.append(
             (
                 d["attributes"]["materialized_path"].lstrip("/"),
                 d["links"]["download"],
                 d["attributes"]["extra"]["hashes"]["md5"],
-                round(float(d["attributes"]["size"]) / (1024 * 1024), 2),
+                size,
             )
         )
     lines_out.sort()
-    print("filename", "url", "md5", "size(MB)", sep="\t")
+    size_name = "size(B)" if size_in_bytes else "size(MB)"
+    print("filename", "url", "md5", size_name, sep="\t")
     for line in lines_out:
         print(*line, sep="\t")
 
@@ -92,6 +97,11 @@ parser.add_argument(
     default="tsv",
     help="Output format, choose from json (gives all data) or tsv (just outputs filename,url,md5,size) [%(default)s]",
 )
+parser.add_argument(
+    "--size_in_bytes",
+    action="store_true",
+    help="In TSV output, report file size in bytes instead of MB",
+)
 options = parser.parse_args()
 
 log = logging.getLogger()
@@ -104,6 +114,6 @@ get_files_from_folders(options.project_id, results)
 if options.format == "json":
     print(json.dumps(results, indent=2))
 elif options.format == "tsv":
-    print_tsv(results)
+    print_tsv(results, size_in_bytes=options.size_in_bytes)
 else:
     raise NotImplementedError(f"Uknown output format {options.format}")

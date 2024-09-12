@@ -137,6 +137,7 @@ def print_tsv(results, size_in_bytes=False):
             lines_out.append(
                 (
                     project_names,
+                    node_id,
                     d["attributes"]["materialized_path"].lstrip("/"),
                     d["links"]["download"],
                     d["attributes"]["extra"]["hashes"]["md5"],
@@ -145,7 +146,7 @@ def print_tsv(results, size_in_bytes=False):
             )
     lines_out.sort()
     size_name = "size(B)" if size_in_bytes else "size(MB)"
-    print("project", "filename", "url", "md5", size_name, sep="\t")
+    print("project", "project_id", "filename", "url", "md5", size_name, sep="\t")
     for line in lines_out:
         print(*line, sep="\t")
 
